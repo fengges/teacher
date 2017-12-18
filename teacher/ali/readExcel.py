@@ -7,7 +7,15 @@ feature=list(data.columns[1:-1])
 
 X_all = data[feature]
 y_all = data[label]
-
+col_name = X_all.columns[-1]
+col=X_all[col_name]
+dic = {}
+for v in col:
+    if v==v:
+        dic[str(v)] = 1
+        print(v)
+if len(dic) <= 1:
+    print(X_all.columns[-1])
 def preprocess_features(X):
     ''' Preprocesses the student data and converts non-numeric binary variables into
         binary (0/1) variables. Converts categorical variables into dummy variables. '''
