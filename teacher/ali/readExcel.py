@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.decomposition import PCA
 from sklearn.model_selection import  train_test_split as test
 #--------------------将特征变为数字--------------------
 # data=pd.read_excel("data/训练.xlsx",sheetname=0)
@@ -66,20 +67,32 @@ from sklearn.model_selection import  train_test_split as test
 #---------------------训练预测----------------------
 
 data=pd.read_csv("data/nan_mean_3.csv")
-pre_a=pd.read_excel("data/测试A.xlsx")
 
 label=data.columns[-1]
 feature=list(data.columns[1:-1])
 X_all = data[feature]
 y_all = data[label]
-x=np.array(X_all)
+df_norm = (X_all - X_all.min()) / (X_all.max() - X_all.min())
+
+x=np.array(df_norm)
 y=np.array(y_all)
-
+pca = PCA(n_components=1000)
+pca.fit(x)
+t=pca.fit_transform(x)
+sum=0
+X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
 model = LinearRegression()
-model.fit(x,y)
+# model.fit(X_train,y_train)
 
-predictions = model.predict(X_test)
+quadratic_featurizer = PolynomialFeatures(degree=2)
+X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
+X_test_quadratic = quadratic_featurizer.transform(X_test)
+model.fit(X_train_quadratic, y_train)
+predictions = model.predict(X_test_quadratic)
+
 loss=mse(predictions,y_test)
-print(loss/len(y_test))
+
+print(loss)
+
 
 
