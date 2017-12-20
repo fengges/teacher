@@ -108,10 +108,10 @@ meandistortions=[]
 def getDegree(m):
     for n in range(1450):
         i=comb(m+n, m)
-        if i>=1000000:
+        if i>=200000:
             return n-1
-for n_c in range(2,720,10):
-    n_components=500
+for n_c in range(2,720,15):
+    n_components=n_c
     degree=getDegree(n_components)
 
     pca = PCA(n_components=n_components)
@@ -121,7 +121,7 @@ for n_c in range(2,720,10):
     t_b=d_x[600:]
     #---------------------测试-----------------------------
     sum=0
-    for  i in range(30):
+    for  i in range(20):
         print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
         X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
         model = LinearRegression()
@@ -139,7 +139,7 @@ for n_c in range(2,720,10):
     print('--------')
 
     print(n_components)
-    print(sum/30)
+    print(sum/20)
 plt.plot(K,meandistortions,'bx-')
 plt.xlabel('k')
 plt.ylabel('mse')
