@@ -90,7 +90,7 @@ meandistortions=[]
 km=open('kmean.txt', 'w+',encoding='utf-8')
 km.write(str(10)+':'+str(sum)+'\n')
 for k in K:
-    print(str(k)+':'+time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+
     clf = KMeans(n_clusters=k,n_init=5,max_iter=150,tol=1e-3)
     clf.fit(tfidf)
     sum1=clf.inertia_
