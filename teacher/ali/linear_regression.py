@@ -1,12 +1,15 @@
 
 import pandas as pd
 import numpy as np
+import time
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.decomposition import PCA
 from sklearn.model_selection import  train_test_split as test
-
+from scipy.special import comb
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 size=[500,100,121]
 label_data=pd.read_csv("data/label.csv")
 label=label_data['label']
@@ -107,9 +110,13 @@ t=d_x[0:500]
 t_a=d_x[500:600]
 t_b=d_x[600:]
 #---------------------测试-----------------------------
+def getDegree(m):
+    for n in range(1450):
+        i=comb(m+n, m)
+        if i>=200000:
+            return n-1
 sum=0
-for  i in range(50):
-    print(i)
+for  i in range(1000):
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression()
     # model.fit(X_train,y_train)
@@ -122,8 +129,7 @@ for  i in range(50):
 
     loss=mse(predictions,y_test)
     sum+=loss
-print('mean')
-print(sum/50)
+print(sum/1000)
 
 data=pd.read_csv("data/regular_0_4.csv")
 
@@ -140,8 +146,7 @@ t_a=d_x[500:600]
 t_b=d_x[600:]
 #---------------------测试-----------------------------
 sum=0
-for  i in range(50):
-    print(i)
+for  i in range(1000):
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression()
     # model.fit(X_train,y_train)
@@ -154,8 +159,8 @@ for  i in range(50):
 
     loss=mse(predictions,y_test)
     sum+=loss
-print('0')
-print(sum/50)
+print('mean')
+print(sum/1000)
 
 # model = LinearRegression()
 # # model.fit(X_train,y_train)
