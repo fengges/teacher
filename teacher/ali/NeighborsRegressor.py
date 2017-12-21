@@ -14,7 +14,7 @@ label=label_data['label']
 
 
 
-data=pd.read_csv("data/regular_mean_4.csv")
+data=pd.read_csv("data/time_regular_mean_5.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -24,7 +24,7 @@ x=np.array(X_all)
 y=np.array(y_all)
 pca = PCA(n_components=700)
 d_x=pca.fit_transform(x)
-t=x[0:500]
+t=d_x[0:500]
 t_a=d_x[500:600]
 t_b=d_x[600:]
 
@@ -41,7 +41,6 @@ for i in range(1000):
     loss=mse(uni_knr_y_predict,y_test)
     sum+=loss
 print(sum/1000)
-
 
 
 
