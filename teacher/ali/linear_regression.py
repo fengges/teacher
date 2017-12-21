@@ -108,7 +108,8 @@ t_a=d_x[500:600]
 t_b=d_x[600:]
 #---------------------测试-----------------------------
 sum=0
-for  i in range(1000):
+for  i in range(50):
+    print(i)
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression()
     # model.fit(X_train,y_train)
@@ -121,7 +122,8 @@ for  i in range(1000):
 
     loss=mse(predictions,y_test)
     sum+=loss
-print(sum/1000)
+print('mean')
+print(sum/50)
 
 data=pd.read_csv("data/regular_0_4.csv")
 
@@ -138,7 +140,8 @@ t_a=d_x[500:600]
 t_b=d_x[600:]
 #---------------------测试-----------------------------
 sum=0
-for  i in range(1000):
+for  i in range(50):
+    print(i)
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression()
     # model.fit(X_train,y_train)
@@ -151,8 +154,8 @@ for  i in range(1000):
 
     loss=mse(predictions,y_test)
     sum+=loss
-print('mean')
-print(sum/1000)
+print('0')
+print(sum/50)
 
 # model = LinearRegression()
 # # model.fit(X_train,y_train)
