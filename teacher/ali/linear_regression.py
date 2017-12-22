@@ -45,18 +45,20 @@ label=label_data['label']
 #     for col, col_data in X.iteritems():
 #         if col_data.dtype == object:
 #             col_data = col_data.replace(['yes', 'no'], [1, 0])
-#         if col_data.dtype == object:
+#         s = col.lower()
+#         inde=s.find('tool')
+#         if inde>=0:
 #             col_data = pd.get_dummies(col_data, prefix=col)
 #         output = output.join(col_data)
 #     return output
 #
 # print(X_all.head())
 # X_all = preprocess_features(X_all)
-# X_all.to_csv("data/value_1.csv")
+# X_all.to_csv("data/value_tool_1.csv")
 
 
 #--------------------去除无用特征--------------------
-# data=pd.read_csv("data/value_1.csv")
+# data=pd.read_csv("data/value_tool_1.csv")
 # feature=list(data.columns[1:])
 # X_all = data[feature]
 #
@@ -76,18 +78,18 @@ label=label_data['label']
 # df.to_csv("data/delete_cols.csv")
 # X_all = X_all.drop(columns=delete_col)
 # print(X_all.head())
-# X_all.to_csv("data/delete_unuse_feature_2.csv")
+# X_all.to_csv("data/delete_unuse_feature,tool_2.csv")
 
 #---------------------处理缺省值----------------------
-# data=pd.read_csv("data/delete_unuse_feature_2.csv")
+# data=pd.read_csv("data/delete_unuse_feature,tool_2.csv")
 # feature=list(data.columns[1:])
 # X_all = data[feature]
 # # data=X_all.fillna(0)
 # data=X_all.fillna(data.mean())
-# data.to_csv("data/nan_mean_3.csv")
+# data.to_csv("data/nan_mean_tool_3.csv")
 
 #---------------------规范化---------------------
-# data=pd.read_csv("data/nan_0_3.csv")
+# data=pd.read_csv("data/nan_mean_tool_3.csv")
 #
 # feature=list(data.columns[1:])
 # X_all = data[feature]
@@ -96,7 +98,7 @@ label=label_data['label']
 
 #---------------------训练预测----------------------
 
-data=pd.read_csv("data/regular_mean_4.csv")
+data=pd.read_csv("data/time_regular_mean_tool_5.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -104,61 +106,22 @@ y_all = label
 
 x=np.array(X_all)
 y=np.array(y_all)
-meandistortions=[]
+pca = PCA(n_components=720)
+d_x=pca.fit_transform(x)
+t=d_x[0:500]
+t_a=d_x[500:600]
+t_b=d_x[600:]
+#---------------------测试-----------------------------
 def getDegree(m):
     for n in range(1450):
         i=comb(m+n, m)
         if i>=200000:
-            if n>100:
-                return 100
-            else :return n-1
-for n_c in range(2,720,15):
-    n_components=n_c
-    degree=getDegree(n_components)
-
-    pca = PCA(n_components=n_components)
-    d_x=pca.fit_transform(x)
-    t=d_x[0:500]
-    t_a=d_x[500:600]
-    t_b=d_x[600:]
-    #---------------------测试-----------------------------
-    sum=0
-    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-    for  i in range(20):
-
-        X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
-        model = LinearRegression()
-        # model.fit(X_train,y_train)
-
-        quadratic_featurizer = PolynomialFeatures(degree=degree)
-        X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
-        X_test_quadratic = quadratic_featurizer.transform(X_test)
-        model.fit(X_train_quadratic, y_train)
-        predictions = model.predict(X_test_quadratic)
-
-        loss=mse(predictions,y_test)
-        sum+=loss
-    meandistortions.append(sum)
-    print('--------')
-
-    print(n_components)
-    print(sum/20)
-plt.plot(K,meandistortions,'bx-')
-plt.xlabel('k')
-plt.ylabel('mse')
-plt.title('result')
-plt.show()
-
-
-# model = LinearRegression()
-# # model.fit(X_train,y_train)
-# quadratic_featurizer = PolynomialFeatures(degree=2)
-# X_train_quadratic = quadratic_featurizer.fit_transform(t)
-# X_a_quadratic = quadratic_featurizer.transform(t_a)
-# X_b_quadratic = quadratic_featurizer.transform(t_b)
-# model.fit(X_train_quadratic,y_all)
-# pre_a = model.predict(X_a_quadratic)
-# pre_b = model.predict(X_b_quadratic)
+            return n-1
+# sum=0
+# for  i in range(100):
+#     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
+#     model = LinearRegression(normalize=True)
+#     # model.fit(X_train,y_train)
 #
 # #--------------------生成答案---------------------------
 #
