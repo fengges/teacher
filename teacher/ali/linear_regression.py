@@ -109,7 +109,9 @@ def getDegree(m):
     for n in range(1450):
         i=comb(m+n, m)
         if i>=200000:
-            return n-1
+            if n>100:
+                return 100
+            else :return n-1
 for n_c in range(2,720,15):
     n_components=n_c
     degree=getDegree(n_components)
@@ -121,8 +123,9 @@ for n_c in range(2,720,15):
     t_b=d_x[600:]
     #---------------------测试-----------------------------
     sum=0
+    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
     for  i in range(20):
-        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+
         X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
         model = LinearRegression()
         # model.fit(X_train,y_train)
