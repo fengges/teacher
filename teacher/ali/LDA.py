@@ -26,7 +26,7 @@ def getClass(label,n):
     for c in range(a.shape[0]):
         a[c]=int(a[c])
     return a
-cla=getClass(label_norm,25)
+cla=getClass(label_norm,100)
 x=np.array(X_all)
 y=np.array(y_all)
 
@@ -45,8 +45,7 @@ for  i in range(100):
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression(normalize=True)
     # model.fit(X_train,y_train)
-    step1 = ('Imputer', Imputer())
-    quadratic_featurizer = PolynomialFeatures(degree=2)
+    quadratic_featurizer = PolynomialFeatures(degree=3)
     X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
     X_test_quadratic = quadratic_featurizer.transform(X_test)
     model.fit(X_train_quadratic, y_train)
@@ -57,3 +56,4 @@ for  i in range(100):
     print(loss)
 print('-----')
 print(sum/100)
+

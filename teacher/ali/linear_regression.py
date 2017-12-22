@@ -104,7 +104,7 @@ y_all = label
 
 x=np.array(X_all)
 y=np.array(y_all)
-pca = PCA(n_components=720)
+pca = PCA(n_components=120)
 d_x=pca.fit_transform(x)
 t=d_x[0:500]
 t_a=d_x[500:600]
@@ -121,7 +121,7 @@ for  i in range(100):
     model = LinearRegression(normalize=True)
     # model.fit(X_train,y_train)
 
-    quadratic_featurizer = PolynomialFeatures(degree=2)
+    quadratic_featurizer = PolynomialFeatures(degree=3)
     X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
     X_test_quadratic = quadratic_featurizer.transform(X_test)
     model.fit(X_train_quadratic, y_train)
