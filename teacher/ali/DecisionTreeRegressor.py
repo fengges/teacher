@@ -56,7 +56,7 @@ clf.fit(x,y)
 features=clf.feature_importances_
 index = np.where(features>0)
 
-data=pd.read_csv("data/regular_mean_4.csv")
+data=pd.read_csv("data/delf_time_regular_mean_tool_5.csv")
 col=list(data.columns[1:])
 feature=col
 X_all = data[feature]
@@ -75,7 +75,7 @@ y=np.array(y_all)
 t=x[0:500]
 sum=0
 for  i in range(100):
-    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+
     X_train, X_test, y_train, y_test=test(t,y, test_size = 0.3)
     model = LinearRegression(normalize=True)
     # model.fit(X_train,y_train)

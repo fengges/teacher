@@ -78,7 +78,7 @@ import time
 # df_norm.to_csv('data/time_col_4.csv')
 
 #------------------------合并-------------------
-data=pd.read_csv("data/regular_mean_4.csv")
+data=pd.read_csv("data/quchujizhi_4.csv")
 feature=list(data.columns[1:])
 X_all = data[feature]
 
@@ -97,11 +97,14 @@ for i in range(len(feature_time)):
     if len(dic) <= 1:
         delete_col.append(col_name)
 print(delete_col)
+f_t=[]
+for f in feature_time:
+    if f in feature:
+        f_t.append(f)
 
-
-X_all = X_all.drop(columns=feature_time)
+X_all = X_all.drop(columns=f_t)
 frames=[X_all,t]
 result = pd.concat(frames, axis=1)
 result=result.drop(columns=delete_col)
 
-result.to_csv('data/time_regular_mean_5.csv')
+result.to_csv('data/delf_time_regular_mean_tool_5.csv')
