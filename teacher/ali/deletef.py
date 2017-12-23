@@ -132,6 +132,8 @@ for j in range(x.shape[1]):
     else:
         print(col_name+'---------------')
 p = pd.DataFrame(y, columns=col)
+
+p= (p - p.min()) / (p.max() - p.min())
 frames=[p,l_df]
 result = pd.concat(frames, axis=1)
 result.to_csv("data/quchujizhi_4.csv")
