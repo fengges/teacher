@@ -14,7 +14,7 @@ size=[500,100,121]
 label_data=pd.read_csv("data/label.csv")
 label=label_data['label']
 
-data=pd.read_csv("data/time_regular_mean_tool_5.csv")
+data=pd.read_csv("data/quchujizhi_4.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -67,20 +67,6 @@ model.fit(X_train_quadratic,y_all)
 pre_a = model.predict(X_a_quadratic)
 pre_b = model.predict(X_b_quadratic)
 
-k=x[0:500]
-k_a=x[500:600]
-max=label.max()
-min=label.min()
-knr = KNeighborsRegressor(weights='uniform')
-knr.fit(k, y)
-for a in range(len(pre_a)):
-    ind=pre_a[a]
-    if ind>max or ind<min:
-        v=[]
-        v.append(k_a[a])
-
-        pre=knr.predict(v)
-        pre_a[a] =pre[0]
 
 
 

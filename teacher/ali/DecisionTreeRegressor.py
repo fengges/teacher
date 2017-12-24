@@ -91,6 +91,22 @@ for  i in range(100):
     print(loss)
 print(sum/100)
 
+
+k=x[0:500]
+k_a=x[500:600]
+max=label.max()
+min=label.min()
+knr = KNeighborsRegressor(weights='uniform')
+knr.fit(k, y)
+for a in range(len(pre_a)):
+    ind=pre_a[a]
+    if ind>max or ind<min:
+        v=[]
+        v.append(k_a[a])
+
+        pre=knr.predict(v)
+        pre_a[a] =pre[0]
+
 # #--------------------生成答案---------------------------
 # #
 # ans_a_label=pd.read_csv("data/ans_a.csv")

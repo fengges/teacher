@@ -94,11 +94,11 @@ label=label_data['label']
 # feature=list(data.columns[1:])
 # X_all = data[feature]
 # df_norm = (X_all - X_all.min()) / (X_all.max() - X_all.min())
-# df_norm.to_csv('data/regular_0_4.csv')
+# df_norm.to_csv('data/regular_mean_tool_4.csv')
 
 #---------------------训练预测----------------------
 
-data=pd.read_csv("data/time_regular_mean_tool_5.csv")
+data=pd.read_csv("data/quchujizhi_4.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -106,7 +106,7 @@ y_all = label
 
 x=np.array(X_all)
 y=np.array(y_all)
-pca = PCA(n_components=720)
+pca = PCA(n_components=120)
 d_x=pca.fit_transform(x)
 t=d_x[0:500]
 t_a=d_x[500:600]
@@ -123,16 +123,39 @@ def getDegree(m):
 #     model = LinearRegression(normalize=True)
 #     # model.fit(X_train,y_train)
 #
-# #--------------------生成答案---------------------------
+#     quadratic_featurizer = PolynomialFeatures(degree=3)
+#     X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
+#     X_test_quadratic = quadratic_featurizer.transform(X_test)
+#     model.fit(X_train_quadratic, y_train)
+#     predictions = model.predict(X_test_quadratic)
 #
-# ans_a_label=pd.read_csv("data/ans_a.csv")
-# ans_a = pd.DataFrame(pre_a)
-# frames_a = [ans_a_label,ans_a]
-# result_a = pd.concat(frames_a, axis=1)
-# result_a.to_csv("data/ans_a_1.csv")
-#
-# ans_b_label=pd.read_csv("data/ans_b.csv")
-# ans_b = pd.DataFrame(pre_b)
-# frames_b = [ans_b_label,ans_b]
-# result_b = pd.concat(frames_b, axis=1)
-# result_b.to_csv("data/ans_b_1.csv")
+#     loss=mse(predictions,y_test)
+#     sum+=loss
+#     print(loss)
+# print('-----')
+# print(sum/100)
+
+
+model = LinearRegression(normalize=True)
+# model.fit(X_train,y_train)
+quadratic_featurizer = PolynomialFeatures(degree=2)
+X_train_quadratic = quadratic_featurizer.fit_transform(t)
+X_a_quadratic = quadratic_featurizer.transform(t_a)
+X_b_quadratic = quadratic_featurizer.transform(t_b)
+model.fit(X_train_quadratic,y_all)
+pre_a = model.predict(X_a_quadratic)
+pre_b = model.predict(X_b_quadratic)
+
+#--------------------生成答案---------------------------
+
+ans_a_label=pd.read_csv("data/ans_a.csv")
+ans_a = pd.DataFrame(pre_a)
+frames_a = [ans_a_label,ans_a]
+result_a = pd.concat(frames_a, axis=1)
+result_a.to_csv("data/ans_a_1.csv")
+
+ans_b_label=pd.read_csv("data/ans_b.csv")
+ans_b = pd.DataFrame(pre_b)
+frames_b = [ans_b_label,ans_b]
+result_b = pd.concat(frames_b, axis=1)
+result_b.to_csv("data/ans_b_1.csv")

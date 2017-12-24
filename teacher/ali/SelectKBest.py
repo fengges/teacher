@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsRegressor
 import matplotlib.pyplot as plt
 from sklearn.feature_selection import SelectKBest as SKB
 from sklearn.feature_selection import RFE
+from sklearn.feature_selection import chi2
 size=[500,100,121]
 label_data=pd.read_csv("data/label.csv")
 label=label_data['label']
@@ -25,9 +26,13 @@ y_all = label
 x=np.array(X_all)
 y=np.array(y_all)
 t=x[0:500]
-rfe=RFE(estimator=LinearRegression(normalize=True), n_features_to_select=720)
-rfe.fit(t, y)
-d_x=rfe.transform(x)
+skb=SKB(chi2, k=720)
+y_label=y.copy()
+for i in range(y.shape[0]):
+    y_label[i]=int(y[i])
+
+skb.fit(t, y_label)
+d_x=skb.transform(x)
 t=d_x[0:500]
 t_a=d_x[500:600]
 t_b=d_x[600:]
