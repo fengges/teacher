@@ -143,9 +143,11 @@ X_train_quadratic = quadratic_featurizer.fit_transform(t)
 X_a_quadratic = quadratic_featurizer.transform(t_a)
 X_b_quadratic = quadratic_featurizer.transform(t_b)
 model.fit(X_train_quadratic,y_all)
+pre=model.predict(X_train_quadratic)
 pre_a = model.predict(X_a_quadratic)
 pre_b = model.predict(X_b_quadratic)
-
+loss=mse(pre,y_all)
+print(loss)
 #--------------------生成答案---------------------------
 
 ans_a_label=pd.read_csv("data/ans_a.csv")
