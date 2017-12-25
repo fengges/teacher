@@ -42,7 +42,7 @@ print("y=x[100]")
 
 
 #import pulp
-thorod=50
+thorod=25
 print("max=34600")
 print("min=10000")
 print("for n in range(1000):")
