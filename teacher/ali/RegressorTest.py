@@ -42,7 +42,7 @@ label=label_data['label']
 
 
 
-data=pd.read_csv("data/quchujizhi_4.csv")
+data=pd.read_csv("data/drop_f.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]

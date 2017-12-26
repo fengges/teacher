@@ -14,7 +14,7 @@ label=label_data['label']
 
 
 
-data=pd.read_csv("data/quchujizhi_4.csv")
+data=pd.read_csv("data/drop_f.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -44,7 +44,7 @@ t_b=d_x[600:]
 
 
 
-knr = KNeighborsRegressor(weights='uniform')
+knr = KNeighborsRegressor(weights='distance')
 knr.fit(t, y)
 pre_a = knr.predict(t_a)
 pre_b = knr.predict(t_b)

@@ -42,7 +42,7 @@ print("y=x[100]")
 
 
 #import pulp
-thorod=25
+thorod=10
 print("max=34600")
 print("min=10000")
 print("for n in range(1000):")
@@ -52,7 +52,7 @@ print('  model = pulp.LpProblem("Profit maximising problem", pulp.LpMaximize)')
 #model = pulp.LpProblem("Profit maximising problem", pulp.LpMaximize)
 
 for i in range(100):
-    print("  x"+str(i)+'= pulp.LpVariable(\'x'+str(i)+'\', lowBound=0, cat=\'Integer\')')
+    print("  x"+str(i)+'= pulp.LpVariable(\'x'+str(i)+'\', lowBound=0)')
 # A = pulp.LpVariable('A', lowBound=0, cat='Integer')
 # B = pulp.LpVariable('B', lowBound=0, cat='Integer')
 
@@ -97,7 +97,7 @@ for i in range(100):
 #
 # print(pulp.value)
 print("  xList=np.array(xList)/100")
-print("  max=pulp.value(model.objective)+1")
+print("  max=pulp.value(model.objective)-0.01")
 print("  sum=0")
 print("  for i in range(t.shape[1]):")
 print("     sum+=mse(xList,t[:,i])")

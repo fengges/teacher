@@ -58,7 +58,7 @@ t_b=d_x[600:]
 # print(sum/100)
 
 model = LinearRegression(normalize=True)
-# model.fit(X_train,y_train)
+#model.fit(X_train,y_train)
 quadratic_featurizer = PolynomialFeatures(degree=3)
 X_train_quadratic = quadratic_featurizer.fit_transform(t)
 X_a_quadratic = quadratic_featurizer.transform(t_a)

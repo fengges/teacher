@@ -98,7 +98,7 @@ label=label_data['label']
 
 #---------------------训练预测----------------------
 
-data=pd.read_csv("data/quchujizhi_4.csv")
+data=pd.read_csv("data/drop_f.csv")
 
 feature=list(data.columns[1:])
 X_all = data[feature]
@@ -123,7 +123,7 @@ def getDegree(m):
 #     model = LinearRegression(normalize=True)
 #     # model.fit(X_train,y_train)
 #
-#     quadratic_featurizer = PolynomialFeatures(degree=3)
+#     quadratic_featurizer = PolynomialFeatures(degree=2)
 #     X_train_quadratic = quadratic_featurizer.fit_transform(X_train)
 #     X_test_quadratic = quadratic_featurizer.transform(X_test)
 #     model.fit(X_train_quadratic, y_train)
@@ -137,7 +137,7 @@ def getDegree(m):
 
 
 model = LinearRegression(normalize=True)
-# model.fit(X_train,y_train)
+# model.fit(,y_train)
 quadratic_featurizer = PolynomialFeatures(degree=3)
 X_train_quadratic = quadratic_featurizer.fit_transform(t)
 X_a_quadratic = quadratic_featurizer.transform(t_a)
