@@ -89,10 +89,12 @@ label=label_data['label']
 # X_all.to_csv("data/delete_unuse_feature,tool_2.csv")
 
 #---------------------处理缺省值----------------------
-# data=pd.read_csv("data/delete_unuse_feature,tool_2.csv")
-# feature=list(data.columns[1:])
-# X_all = data[feature]
-# # data=X_all.fillna(0)
+data=pd.read_csv("data/delete_unuse_feature,tool_2.csv")
+feature=list(data.columns[1:])
+X_all = data[feature]
+lis=X_all.isnull().sum(axis=1).tolist()
+print(lis)
+# data=X_all.fillna(0)
 # data=X_all.fillna(data.mean())
 # data.to_csv("data/nan_mean_tool_3.csv")
 

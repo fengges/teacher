@@ -14,22 +14,24 @@ from sklearn.linear_model import TheilSenRegressor as TSR
 from sklearn.tree import ExtraTreeRegressor as ETR
 from sklearn.tree import DecisionTreeRegressor as DTR
 from sklearn.neural_network import MLPRegressor as MR
+from sklearn.cross_decomposition import PLSRegression as PLSR
 regressor={}
-regressor['DR']=DR()
-regressor['ABR']=ABR()
-regressor['BR']=BR()
-regressor['ETR']=ETR()
-regressor['GBR']=GBR()
-regressor['RFR']=RFR()
-regressor['GPR']=GPR()
-regressor['HR']=HR()
-regressor['PAR']=PAR()
-regressor['RR']=RR(min_samples=10)
-regressor['SR']=SR()
-regressor['TSR']=TSR()
-regressor['ETR']=ETR()
-regressor['DTR']=DTR()
-regressor['MR']=MR()
+# regressor['DR']=DR()
+# regressor['ABR']=ABR()
+# regressor['BR']=BR()
+# regressor['ETR']=ETR()
+# regressor['GBR']=GBR()
+# regressor['RFR']=RFR()
+# regressor['GPR']=GPR()
+# regressor['HR']=HR()
+# regressor['PAR']=PAR()
+# regressor['RR']=RR(min_samples=10)
+# regressor['SR']=SR()
+# regressor['TSR']=TSR()
+# regressor['ETR']=ETR()
+# regressor['DTR']=DTR()
+# regressor['MR']=MR()
+regressor['PLSR']=PLSR()
 
 
 import pandas as pd
@@ -53,19 +55,25 @@ t_a=X_all[500:600]
 t_b=X_all[600:]
 
 #----------------------测试
+meandistortions=[]
 
-
-for k in regressor:
+K=range(2,10)
+for k in K:
     sum=0
-    for i in range(1000):
+    for i in range(100):
         X_train, X_test, y_train, y_test=test(t,y_all, test_size = 0.3)
 
-        clf = regressor[k]
+        clf = PLSR(n_components=k)
         clf.fit(X_train, y_train)
         pre =clf.predict(X_test)
-
         loss=mse(pre,y_test)
         sum+=loss
-    print(k+":"+str(sum/1000))
+    meandistortions.append(sum)
+    print(str(k)+":"+str(sum/100))
 
+plt.plot(K,meandistortions,'bx-')
+plt.xlabel('k')
+plt.ylabel('困惑度')
+plt.title('确定最佳分类数')
+plt.show()
 
