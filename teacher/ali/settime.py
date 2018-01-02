@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import time
 # ----------------找到时间列--------------------
-# data=pd.read_csv("data/delete_unuse_feature_2.csv")
+# data=pd.read_csv("data/delete_unuse_feature,tool_2.csv")
 # feature=list(data.columns[1:])
 # X_all = data[feature]
 # t=X_all.mean()

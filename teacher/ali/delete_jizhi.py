@@ -11,7 +11,7 @@ from sklearn.neighbors import KNeighborsRegressor
 import matplotlib.pyplot as plt
 import time
 from sklearn.tree import DecisionTreeClassifier as DTC
-data=pd.read_csv("data/time_regular_mean_tool_5.csv")
+data=pd.read_csv("data/regular_mean_tool_4.csv")
 size=[500,100,121]
 
 feature=list(data.columns[1:])

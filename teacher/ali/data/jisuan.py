@@ -47,7 +47,7 @@ print("model += "+v+",'profit'")
 # model += 30000 * A + 45000 * B,'profit'
 max_y=346
 min_y=232
-thorod=15
+thorod=5
 for j in range(t.shape[1]):
     v = ''
     for i in range(100):

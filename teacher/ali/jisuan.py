@@ -42,12 +42,10 @@ print("y=x[100]")
 
 
 #import pulp
-thorod=10
+thorod=1
 print("max=34600")
-print("min=10000")
-print("for n in range(1000):")
-print("  print('start')")
-print("  print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))")
+print("min=10")
+print("for n in range(1000000):")
 print('  model = pulp.LpProblem("Profit maximising problem", pulp.LpMaximize)')
 #model = pulp.LpProblem("Profit maximising problem", pulp.LpMaximize)
 
@@ -104,7 +102,7 @@ print("     sum+=mse(xList,t[:,i])")
 print("  mi=sum-y.sum()")
 print("  if mi*mi<min:")
 print("     min=mi*mi")
-print("     name=str(n)+'.scv'")
+print("     name='data/value/'+str(n)+'.csv'")
 print("     print(min)")
 print("     df = pd.DataFrame(xList)")
 print("     df.to_csv(name)")
