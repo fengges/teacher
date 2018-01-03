@@ -32,10 +32,13 @@ y=np.array(y_all)
 
 t=x[0:500]
 ranks={}
-# p=[]
-# for i in range(t.shape[1]):
-#     p.append(pearsonr(t[:,i],y)[0])
-# ranks['pearsonr']=p
+p=[]
+for i in range(t.shape[1]):
+    temp=pearsonr(t[:,i],y)[0]
+    if temp<0:
+        temp=-temp
+    p.append(temp)
+ranks['pearsonr']=p
 #
 #
 # f_r=f_regression(t,y)
@@ -67,14 +70,14 @@ ranks={}
 # ranks['rf']=list(rf.feature_importances_)
 
 
-from minepy import MINE
-
-m = MINE()
-mic=[]
-for i in range(t.shape[1]):
-    m.compute_score(t[:,i],y)
-    mic.append( m.mic())
-ranks['mic']=mic
+# from minepy import MINE
+#
+# m = MINE()
+# mic=[]
+# for i in range(t.shape[1]):
+#     m.compute_score(t[:,i],y)
+#     mic.append( m.mic())
+# ranks['mic']=mic
 
 
 value=[]
