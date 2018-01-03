@@ -32,41 +32,49 @@ y=np.array(y_all)
 
 t=x[0:500]
 ranks={}
-p=[]
+# p=[]
+# for i in range(t.shape[1]):
+#     p.append(pearsonr(t[:,i],y)[0])
+# ranks['pearsonr']=p
+#
+#
+# f_r=f_regression(t,y)
+# ranks['f_regression']=list(f_r[0])
+#
+#
+# rf = RandomForestRegressor(n_estimators=20, max_depth=4)
+# scores = []
+# for i in range(t.shape[1]):
+#      score = cross_val_score(rf, t[:, i:i+1], y, scoring="r2",
+#                               cv=ShuffleSplit(len(t), 3, .3))
+#      scores.append(round(np.mean(score), 3))
+# ranks['rfr']=scores
+#
+#
+# lr = LinearRegression()
+# rfe = RFE(lr, n_features_to_select=1)
+# rfe.fit(t,y)
+# ranks['rfe']=list(rfe.ranking_)
+#
+#
+#
+# ridge = Ridge(alpha=10)
+# ridge.fit(t,y )
+# ranks['rg']=list(ridge.coef_)
+#
+# rf = RandomForestRegressor(n_estimators=20, max_features=20)
+# rf.fit(t,y)
+# ranks['rf']=list(rf.feature_importances_)
+
+
+from minepy import MINE
+
+m = MINE()
+mic=[]
 for i in range(t.shape[1]):
-    p.append(pearsonr(t[:,i],y)[0])
-ranks['pearsonr']=p
-
-
-f_r=f_regression(t,y)
-ranks['f_regression']=list(f_r[0])
-
-
-rf = RandomForestRegressor(n_estimators=20, max_depth=4)
-scores = []
-for i in range(t.shape[1]):
-     score = cross_val_score(rf, t[:, i:i+1], y, scoring="r2",
-                              cv=ShuffleSplit(len(t), 3, .3))
-     scores.append(round(np.mean(score), 3))
-ranks['rfr']=scores
-
-
-lr = LinearRegression()
-rfe = RFE(lr, n_features_to_select=1)
-rfe.fit(t,y)
-ranks['rfe']=list(rfe.ranking_)
-
-
-
-ridge = Ridge(alpha=10)
-ridge.fit(t,y )
-ranks['rg']=list(ridge.coef_)
-
-rf = RandomForestRegressor(n_estimators=20, max_features=20)
-rf.fit(t,y)
-ranks['rf']=list(rf.feature_importances_)
-
-
+    m.compute_score(t[:,i],y)
+    mic.append( m.mic())
+ranks['mic']=mic
 
 
 value=[]
@@ -80,5 +88,5 @@ t=v.transpose()
 
 df = pd.DataFrame(t, columns=col)
 
-df.to_csv('data/ten.csv')
+df.to_csv('data/ten2.csv')
 
