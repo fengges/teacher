@@ -5,8 +5,8 @@ from teacher.data.readName import *
 
 class Xin(object):
     xin=[]
-    filt=['关工委','博士后','党务','祝福','经典','家园','项目','幸福','博士后','毕业','交流','国内','党委','风采','班团','培训','平台','汇总','高峰','计划','荣誉','奖励','高等','教育学','高职','科学','党代会','党政','党团','支部','工作','全文','关闭','通讯','高级','党建','尚无','有用','应用','计算','相关','公共','成果','师资','全职','教师','顾问','海外','通知','公告','管理','毕业生','国际','马上','高端','全部','论文','计算机','学院','常用','下载','党群','组织','成就','关于','法治','法制']
-    rep=['(',')','（','）',':','：',' ',' ','.',',','/','*','、','讲师','副教授','教授','客座','讲座','博士生导师','硕士','导师','博士','姓名','双聘','主任']
+    filt=['宋体','党校在线','党员发展','党风廉政','后台登陆','关工委','博士后','党务','祝福','经典','家园','项目','幸福','博士后','毕业','交流','国内','党委','风采','班团','培训','平台','汇总','高峰','计划','荣誉','奖励','高等','教育学','高职','科学','党代会','党政','党团','支部','工作','全文','关闭','通讯','高级','党建','尚无','有用','应用','计算','相关','公共','成果','师资','全职','教师','顾问','海外','通知','公告','管理','毕业生','国际','马上','高端','全部','论文','计算机','学院','常用','下载','党群','组织','成就','关于','法治','法制']
+    rep=['\xa0','[',']','(',')','（','）',':','：',' ',' ','.',',','/','*','、','讲师','副教授','教授','客座','讲座','博士生导师','硕士生导师','硕士','导师','博士','姓名','双聘','主任','简介','师资概况']
     def __init__(self):
         file="teacher/data/name.txt"
         self.xin=readXin(file)
@@ -33,7 +33,7 @@ class Xin(object):
     def isXin(self,name):
         if name is None:
             print("None")
-            return 1
+            return 0
         p1 = re.compile('\s+')
         # p2=re.compile('[a - zA - Z0 - 9]+')
         # info = re.sub(p2, " ",info)
@@ -51,3 +51,44 @@ class Xin(object):
         if(l>5):
             return 0
         return self.findXin(name)
+
+    def getXin(self,name):
+        if name is None:
+            print("None")
+            return ""
+        p1 = re.compile('\s+')
+        # p2=re.compile('[a - zA - Z0 - 9]+')
+        # info = re.sub(p2, " ",info)
+        name = re.sub(p1, ' ', name)
+        for r in self.rep:
+            name=name.replace(r,'')
+        name=re.sub('[a-zA-Z]+', '', name)
+        for n in self.filt: #判断名字是否在过滤表上
+            index = name.find(n)
+            if index>=0:
+                return ""
+        l=len(name)
+        if(l<2):     # 判断名字是否符合长度
+            return ""
+        if(l>5):
+            return ""
+        if self.findXin(name)==1:
+            return name
+
+    def get(self,name):
+        if name is None:
+            print("None")
+            return ""
+        p1 = re.compile('\s+')
+        # p2=re.compile('[a - zA - Z0 - 9]+')
+        # info = re.sub(p2, " ",info)
+        name = re.sub(p1, ' ', name)
+        for r in self.rep:
+            name=name.replace(r,'')
+        name=re.sub('[a-zA-Z]+', '', name)
+        for n in self.filt: #判断名字是否在过滤表上
+            index = name.find(n)
+            if index>=0:
+                return ""
+
+        return name

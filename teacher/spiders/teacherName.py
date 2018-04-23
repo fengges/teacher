@@ -10,74 +10,71 @@ from scrapy.http import XmlResponse
 from scrapy.http import Request
 from teacher.util.xin import *
 from teacher.util.mysql import *
-
+import jieba.posseg as pseg
 class CnkiListSpider(scrapy.Spider):
     name = 'teacherName'
     xin=Xin()
-    nameList = []
     start_urls = ['http://epe.xjtu.edu.cn']
     mysql=Mysql()
-    body=''
-    nodePath=[]
+    school={}
     len=4
-    domain=''
-    url=''
-    school=''
-    p={}
-
     def parse(self, response):
-        # self.school=self.mysql.getSchool()
-        # url=self.school[3]
-        url='http://www.math.pku.edu.cn/static/quanzhijiaoyuan.html'
-        self.url=url
-        print(url)
-        self.domain =self.getDomain(url)
-        yield scrapy.Request(url,dont_filter=True, callback=self.parseLink)
+        school=self.mysql.getSchool(0)
+        for s in school:
+            self.school[str(s[0])]=s
+        for k in self.school:
+        #     yield scrapy.Request(k,dont_filter=True, callback=self.parseLink)
 
-    def parseLink(self, response):
-        self.body=self.getBody(response)
+            yield scrapy.Request(self.school[k][3], lambda arg1=response, arg2=k: self.parseLink(arg1, arg2))
+        # url="http://www.tju.edu.cn/seie/szdw/qrjh/"
+        # yield scrapy.Request(url, dont_filter=True, callback=self.parseLink)
+
+    def parseLink(self, response,k):
+        print(response.url)
+        nameList=[]
+        nodePath=[]
+        body=self.getBody(response)
         dr = re.compile(r'<[^>]+>', re.S)
         bodyStr=''
-        for b in self.body:
+        for b in body:
             bodyStr+=' ' +b.extract()
         info = dr.sub(' ',bodyStr)
-        # info = self.body.xpath('string(.)').extract()[0]
-        # print(bodyStr)
         info=self.replaceWhite(info)
         infoList=info.split(' ')
         for inf in infoList:
-            isName=self.xin.isXin(inf)
-            if isName==1:
-                self.nameList.append(inf)
-                node=self.getNode(inf)
-                if len(node)==0:
+            if self.isXin(inf)==1:
+                nameList.append(inf)
+                node = self.getNode(inf,body)
+                if len(node) == 0:
                     continue
-                node=node[0]
-                path=self.getPathNode(node)
-                self.nodePath.append(path)
+                node = node[0]
+                path = self.getPathNode(node)
+                nodePath.append(path)
 
-        maxPath = self.getMatchPath()
+        maxPath,p = self.getMatchPath(nodePath)
 
-        for  t in self.p:
+        for  t in p:
             if len(maxPath)==0:
                 break
-            teacherList=self.getTeacherList(maxPath)
+            teacherList=self.getTeacherList(maxPath,body)
             value=self.getNameValue(teacherList)
             print('value:'+str(value))
-            if value<0.3:
+            if value<0.2:
                 print("错误")
+                print(teacherList)
+                continue
             elif value>0.5:
                 print("正确")
+                print(teacherList)
             else :
                 print("存疑")
-                self.printTeacher(teacherList)
+                print(teacherList)
                 print("筛选")
                 teacherList=self.selectByUrl(teacherList)
-            maxPath = self.deleteAndGetMax(maxPath)
-            if value>=0.3:
-                pass
-                # self.printTeacher(teacherList)
-        # self.mysql.updateSchool(self.school[0])
+                print(teacherList)
+            maxPath = self.deleteAndGetMax(maxPath,p)
+            self.printAndInsertTeacher(teacherList,k)
+        self.mysql.updateSchool(self.school[k][0],1)
         # self.school=self.mysql.getSchool()
         # url=self.school[3]
         # self.url=url
@@ -86,73 +83,112 @@ class CnkiListSpider(scrapy.Spider):
         # yield scrapy.Request(url, callback=self.parseLink)
 
     def selectByUrl(self,teacherList):
-        cla={}
         teacher={}
         for key in teacherList:
-            l=len(key)
-            if str(l) in cla.keys():
-                cla[str(l)]['all']+=1
-            else:
-                item={}
-                item['is']=0
-                item['all'] = 1
-                cla[str(l)] =item
-            isName = self.xin.isXin(teacherList[key])
+            isName = self.isXin(teacherList[key])
             if isName == 1:
-                cla[str(l)]['is'] += 1
-        for key in teacherList:
-            l=len(key)
-            item=cla[str(l)]
-            if item['all']!=0 and item['is']/item['all']>=0.5:
                 teacher[key]=teacherList[key]
         return teacher
 
-    def printTeacher(self,teacherList):
+    def printAndInsertTeacher(self,teacherList,id):
+        school=self.school[id]
+
+        if school is None:
+            raise 0
         for key in teacherList:
-            print('name:'+key+': link:'+teacherList[key])
             item={}
-            item['school']=self.school[1]
-            item['institution']=self.school[2]
-            item['institution_url']=self.url
-            item['name'] = teacherList[key]
+            item['school']=school[1]
+            item['institution']=school[2]
+            item['institution_url']=school[3]
+            item['name'] = self.getXin(teacherList[key])
             item['link']=key
+            item['all_link'] =self.getTeacherUrl(key,school[3])
+
             self.mysql.insertTeacherLink(item)
 
-    def deleteAndGetMax(self,maxPath):
-        self.p[maxPath] = -1
+    def deleteAndGetMax(self,maxPath,p):
+        p[maxPath] = -1
         maxKey = ''
         maxNum = 0
-        for key in self.p:
-            if maxNum < self.p[key]:
-                maxNum = self.p[key]
+        for key in p:
+            if maxNum < p[key]:
+                maxNum = p[key]
                 maxKey = key
         return maxKey
 
-    def getTeacherList(self,maxPath):
+    def getTeacherList(self,maxPath,body):
         xpath=self.praseXpath(maxPath)
-        aList=self.body.xpath('./'+xpath)
+        aList=body.xpath('./'+xpath)
         teacher={}
         for a in aList:
             name=self.setValue(a.xpath('string(.)'),'a').strip()
             aNode=self.findA(a)
 
             if aNode is None:
-                continue
-            link = self.setValue(aNode.xpath('./@href'),'href')
-            if link in teacher.keys():
-                isName = self.xin.isXin(name)
-                if isName == 1:
-                    teacher[link] = name
-            else :
-                teacher[link] = name
+                link=str(-1)+name
+            else:
+                link = self.setValue(aNode.xpath('./@href'),'href')
+                if 'javascript:void(0)'==link:
+                    link = str(-1) + name
+                if link in teacher.keys():
+                    isName = self.isXin(name)
+                    if isName == 1:
+                        teacher[link] +=','+ self.getXin(name)
+                else :
+                    teacher[link] = self.getXin(name)
         return teacher
+    def isXin(self,inf):
+        isName = self.xin.isXin(inf)
+        if isName == 1:
+            return 1
+        else:
+            seg_list = pseg.cut(inf)
+            words = []
+            try:
+                for word, flag in seg_list:
+                    if flag == "nr":
+                        isName = self.xin.isXin(word)
+                        if isName == 1:
+                            words.append(word)
+            except:
+                pass
+            if len(words) > 0:
+                return 1
+        return 0
 
+    def getXin(self, inf):
+        name=self.xin.getXin(inf)
+        if name is None:
+            return ""
+        if name!="":
+            return name
+        else:
+            seg_list = pseg.cut(inf)
+            words = []
+            try:
+                for word, flag in seg_list:
+                    if flag == "nr":
+                        isName = self.xin.isXin(word)
+                        if isName == 1:
+                            words.append(word)
+            except:
+                pass
+            if len(words) > 0:
+                s=""
+                for w in words:
+                    s+=w+","
+                return s
+            else :
+                name=self.xin.get(inf)
+                if name!="":
+                    return name
+        return inf
     def getNameValue(self,teacherList):
         sum=0
         num=0
         for t in teacherList:
             sum+=1
-            isName = self.xin.isXin(teacherList[t])
+            isName = self.isXin(teacherList[t])
             if isName == 1:
                 num+=1
         if sum==0:
@@ -160,17 +196,27 @@ class CnkiListSpider(scrapy.Spider):
         else :
             return num/sum
 
-    def getTeacherUrl(self,url):
-        url=url.strip()
-        if len(url)==0:
+    def getTeacherUrl(self,url,ins):
+        domain = self.getDomain(ins)
+        url = url.strip()
+        if len(url) == 0:
             return ' '
-        if url[0:4]=='http':
+        if url[0:4] == 'http':
             return url
-        if url[0]=='/':
-            return self.domain+url
-        else :
-            index=self.url.rfind('/')
-            return self.url[0:index+1]+url
+        if url[0] == '/':
+            return domain + url
+        elif ins[-1] == '/' and url[0] == '.':
+            return ins + url
+        elif ins[-1] == '/':
+            index = ins[0:-1].rfind('/')
+            if index == -1:
+                l = ins + url
+            else:
+                l = domain + '/' + url
+            return l
+        else:
+            index = ins.rfind('/')
+            return ins[0:index + 1] + url
 
     def praseXpath(self,path):
         xpath=''
@@ -213,36 +259,36 @@ class CnkiListSpider(scrapy.Spider):
         else :
             return aEle
 
-    def getMatchPath(self):
-        path=self.getMaxPath()
+    def getMatchPath(self,nodePath):
+        path,p=self.getMaxPath(nodePath)
         if len(path)==0:
-            return ''
+            return '',p
         temp=path.split('&')[1]
         if self.len*2>=len(temp) and self.len<=6:
             self.len+=1
-            self.getOnePathNode()
-            return self.getMatchPath()
+            self.getOnePathNode(nodePath)
+            return self.getMatchPath(nodePath)
         else :
-            return path
+            return path,p
 
-    def getMaxPath(self):
-        self.p={}
-        for t in self.nodePath:
+    def getMaxPath(self,nodePath):
+        p={}
+        for t in nodePath:
             key=t['path']+'&'+t['class']
-            if key in self.p:
-                self.p[key]+=1
+            if key in p:
+                p[key]+=1
             else :
-                self.p[key] =1
+                p[key] =1
         maxKey=''
         maxNum=0
-        for key in self.p:
-            if maxNum<self.p[key]:
-                maxNum=self.p[key]
+        for key in p:
+            if maxNum<p[key]:
+                maxNum=p[key]
                 maxKey=key
-        return maxKey
+        return maxKey,p
 
-    def getOnePathNode(self):
-        for path in self.nodePath:
+    def getOnePathNode(self,nodePath):
+        for path in nodePath:
             if not path['parent'] is None:
                 element = self.getElementId(path['parent'] )
                 if not element is None:
@@ -293,12 +339,12 @@ class CnkiListSpider(scrapy.Spider):
         else:
             return parent[0]
 
-    def getNode(self,name):
+    def getNode(self,name,body):
         str = "//*[text()='" + name + "']"
-        node = self.body.xpath(str)
+        node = body.xpath(str)
         if len(node)==0:
             str = "//*[contains(text(),'" + name + "')]"
-            node = self.body.xpath(str)
+            node = body.xpath(str)
             return node
         else :
             return node
