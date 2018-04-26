@@ -2,7 +2,7 @@ import pymysql.cursors
 # 连接数据库
 class Mysql(object):
     connect = pymysql.Connect(
-        host='localhost',
+        host='172.28.142.1',
         port=3306,
         user='root',
         passwd='123456',
@@ -30,15 +30,36 @@ class Mysql(object):
     #插入
     def insertSchool(self,item):
 
-        sql="INSERT INTO school  VALUES (NULL,%s,%s,%s,0) "
+        sql="INSERT INTO school VALUES (NULL,%s,%s,%s,0) "
         params=(item['school'],item['adpart'],item['url'])
         self.cursor.execute(sql,params)
         self.connect.commit()
 
+    def insertSchool2(self,item):
+
+        sql="INSERT INTO school VALUES (NULL,%s,%s,%s,100) "
+        params=(item['school'],item['adpart'],item['url'])
+        self.cursor.execute(sql,params)
+        self.connect.commit()
     def getTeacher(self):
         sql = "SELECT * from teacherData2 where search=0 or search>=10 limit 500,100"
         self.cursor.execute(sql)
         return self.cursor.fetchall()
+
+    def getAllTeacher(self):
+        sql = "SELECT * from teacherData2"
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def getAllTeacher2(self):
+        sql = "SELECT id,name,institution,school,homepage from teacher"
+        self.cursor.execute(sql)
+
+        return self.cursor.fetchall()
+    def deleteTeacher(self,id):
+        sql = "delete from teacherData2 where id=%s"
+        self.cursor.execute(sql,(id))
+        self.connect.commit()
 
     def TeacherupdateHtml(self,item):
         sql = "update teacherData2 set info=%s,original_html=%s,image=%s,search=1 where id=%s"
@@ -107,6 +128,21 @@ class Mysql(object):
     def exe_sql(self,sql):
         self.cursor.execute(sql)
         self.connect.commit()
+
+    def get_sql(self,sql):
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
+    def insertTeacher(self, item):
+        sql = "insert into teacher values(NULL,%s,null,null,%s,%s,null,NUll,NUll,null,%s,null)"
+        params = (item['name'], item['school'], item['institution'], item['all_link'])
+        self.cursor.execute(sql, params)
+        self.connect.commit()
+    def get_teacher(self,item):
+        sql='select * from teacher where institution=%s and school=%s and name=%s'
+        params = (item['institution'], item['school'], item['name'])
+        self.cursor.execute(sql, params)
+        return self.cursor.fetchall()
 
     def getPaperId(self):
         sql='SELECT paper_id FROM `paper_length` where paper_id not in(SELECT id_paper_left FROM `paper_dot` GROUP BY id_paper_left) ;'

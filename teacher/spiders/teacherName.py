@@ -19,7 +19,7 @@ class CnkiListSpider(scrapy.Spider):
     school={}
     len=4
     def parse(self, response):
-        school=self.mysql.getSchool(0)
+        school=self.mysql.getSchool(100)
         for s in school:
             self.school[str(s[0])]=s
         for k in self.school:
@@ -53,7 +53,7 @@ class CnkiListSpider(scrapy.Spider):
 
         maxPath,p = self.getMatchPath(nodePath)
 
-        for  t in p:
+        for t in p:
             if len(maxPath)==0:
                 break
             teacherList=self.getTeacherList(maxPath,body)
@@ -177,7 +177,7 @@ class CnkiListSpider(scrapy.Spider):
                 s=""
                 for w in words:
                     s+=w+","
-                return s
+                return s[0:-1]
             else :
                 name=self.xin.get(inf)
                 if name!="":
@@ -341,7 +341,12 @@ class CnkiListSpider(scrapy.Spider):
 
     def getNode(self,name,body):
         str = "//*[text()='" + name + "']"
-        node = body.xpath(str)
+        try:
+            node = body.xpath(str)
+        except:
+            name=self.getXin(name)
+            return self.getNode(name,body)
+
         if len(node)==0:
             str = "//*[contains(text(),'" + name + "')]"
             node = body.xpath(str)
