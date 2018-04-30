@@ -9,13 +9,12 @@ from scrapy.http import HtmlResponse
 from scrapy.http import XmlResponse
 from scrapy.http import Request
 from teacher.util.xin import *
-from teacher.util.mysql import *
 import jieba.posseg as pseg
 class CnkiListSpider(scrapy.Spider):
     name = 'getName'
     xin=Xin()
     start_urls = ['http://epe.xjtu.edu.cn']
-    mysql=Mysql()
+    # mysql=Mysql()
     teacher={}
     len=4
 

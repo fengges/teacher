@@ -15,9 +15,10 @@ class CnkiListSpider(scrapy.Spider):
     name = 'teacherName'
     xin=Xin()
     start_urls = ['http://epe.xjtu.edu.cn']
-    mysql=Mysql()
+    # mysql=Mysql()
     school={}
     len=4
+
     def parse(self, response):
         school=self.mysql.getSchool(100)
         for s in school:

@@ -14,7 +14,7 @@ from teacher.util.mysql import *
 class CnkiSpider(scrapy.Spider):
     name = 'teacherifream'
     start_urls = ['http://www.cnki.net']
-    mysql=Mysql()
+    # mysql=Mysql()
     school={}
     url_fill=['about:blank']
     def parse(self, response):

@@ -15,7 +15,7 @@ from teacher.util.mysql import *
 class CnkiSpider(scrapy.Spider):
     name = 'teacher'
     start_urls = ['http://www.12371.cn/special/xxzd/jh/']
-    mysql=Mysql()
+    # mysql=Mysql()
     list=[]
     institution=''
     map={}

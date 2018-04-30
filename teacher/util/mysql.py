@@ -1,16 +1,23 @@
 import pymysql.cursors
+import socket
 # 连接数据库
 class Mysql(object):
-    connect = pymysql.Connect(
-        host='172.28.142.1',
+
+    connect =''
+    cursor = ''
+    def __init__(self):
+        ip = socket.gethostbyname(socket.gethostname())
+        self.connect=pymysql.Connect(
+        host=ip[0:-2]+'.1',
         port=3306,
         user='root',
         passwd='123456',
         db='schoollink',
         charset='utf8'
 )
+        self.cursor=self.connect.cursor()
 # 获取游标
-    cursor = connect.cursor()
+
     # cursor=''
     # school操作
 
