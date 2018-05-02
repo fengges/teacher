@@ -13,7 +13,7 @@ class CnkiSpider(scrapy.Spider):
     s_dic=SchoolDic()
     pageSchool={}
     school={}
-    file= open('teacher/data/teacher.csv','w',encoding='utf8')
+    file= ''
     split = ["硕士研究生指导教师介绍：","硕士研究生指导教师介绍:","硕士导师介绍：","博士生导师简介:","名师介绍：","教授简介：","研究生老师：","老师介绍：","研究生导师介绍：","研究生导师简介:","导师简介：","硕士生导师：","研究生导师：","博士生导师介绍：","博导介绍：","博士生导师：","导师信息：","硕导介绍：","硕导介绍－","导师介绍：","导师介绍——","导师介绍:","导师："]
     nameRe=[re.compile(r'硕士研究生导师简介\(([\s\S]+)\)'),re.compile(r'硕士生导师简介([\s\S]+)教授'),re.compile(r'硕士生导师简介\(([\s\S]+)\)'),re.compile(r'硕士生导师介绍\(([\s\S]+)\)'),re.compile(r'考研([\s\S]+)老师信息'),re.compile(r'博士生导师([\s\S]+)简历介绍'),re.compile(r'研究生导师介绍([\s\S]+)教授'),re.compile(r'博士生导师([\s\S]+)介绍'),re.compile(r'研究生导师([\s\S]+)介绍'),re.compile(r'研究生导师([\s\S]+)简介'),re.compile(r'考研([\s\S]+)导师信息'),re.compile(r'导师简介\[([\s\S]+)\]'),re.compile(r'导师简介([\s\S]+)教授'),re.compile(r'大学导师([\s\S]+)教授'),re.compile(r'教授([\s\S]+)老师介绍')]
     nameReplace=["介绍","研究员","师范"]
@@ -24,6 +24,7 @@ class CnkiSpider(scrapy.Spider):
     institutionRe=[re.compile(r'学院([\s\S]+学院)'),re.compile(r'[\s\S]+学院'),re.compile(r'[\s\S]+研究所'),re.compile(r'[\s\S]+研究院'),re.compile(r'[\s\S]+实验室'),re.compile(r'[\s\S]+中心'),re.compile(r'[\s\S]+部'),re.compile(r'[\s\S]+学'),re.compile(r'[\s\S]+医院'),re.compile(r'[\s\S]+工程'),re.compile(r'[\s\S]+专业'),re.compile(r'[\s\S]+系'),re.compile(r'[\s\S]+所'),re.compile(r'[\s\S]+站'),re.compile(r'[\s\S]+院'),re.compile(r'[\s\S]+园')]
     # isList=['考研导师队伍','硕士生导师名单','导师名单']
     def parse(self, response):
+        self.file=open('teacher/data/teacher.csv','w',encoding='utf8')
         self.file.write("学校,学院,姓名,url,type\n")
         area=response.xpath('//ul[@class="yzAreaList"]/li')
         for a in area:

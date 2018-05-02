@@ -5,10 +5,14 @@ class Mysql(object):
 
     connect =''
     cursor = ''
+    isZhu=True
     def __init__(self):
-        ip = socket.gethostbyname(socket.gethostname())
+        if self.isZhu:
+            ip = socket.gethostbyname(socket.gethostname())[0:-2]+'.1'
+        else:
+            ip="localhost"
         self.connect=pymysql.Connect(
-        host=ip[0:-2]+'.1',
+        host=ip,
         port=3306,
         user='root',
         passwd='123456',
@@ -148,6 +152,11 @@ class Mysql(object):
     def get_teacher(self,item):
         sql='select * from teacher where institution=%s and school=%s and name=%s'
         params = (item['institution'], item['school'], item['name'])
+        self.cursor.execute(sql, params)
+        return self.cursor.fetchall()
+    def get_teacher2(self,item):
+        sql='select * from teacher where school=%s and name=%s'
+        params = (item['school'], item['name'])
         self.cursor.execute(sql, params)
         return self.cursor.fetchall()
 
