@@ -94,31 +94,31 @@ xin=Xin()
 #         print("add:"+str(item))
 #         mysql.insertTeacher(item)
 
-# data=pd.read_csv("teacher2.csv")
-# for a in range(0, data.shape[0]):
-#     l= data.iloc[a]._values
-#     for i in range(len(l)):
-#         if l[i]!=l[i]:
-#             l[i]=''
-#     item={}
-#     item['institution']=l[1]
-#     item['school']=l[0]
-#     name=l[2]
-#     name=name.strip()
-#     name=name.replace("：",'').replace("桂林、",'')
-#     item['name']=name
-#
-#     if len(l[2])>0:
-#         if len(l[1])>0:
-#             r=mysql.get_teacher(item)
-#         else:
-#             r=mysql.get_teacher2(item)
-#     if len(r)>0:
-#         pass
-#     else:
-#         item['all_link']=l[3]
-#         print("add:"+str(item))
-#         # mysql.insertTeacher(item)
+data=pd.read_csv("teacher4.csv")
+for a in range(0, data.shape[0]):
+    l= data.iloc[a]._values
+    for i in range(len(l)):
+        if l[i]!=l[i]:
+            l[i]=''
+    item={}
+    item['institution']=l[1]
+    item['school']=l[0]
+    name=l[2]
+    name=name.strip()
+    name=name.replace(" ",'').replace(" ",'')
+    item['name']=name
+
+    if len(l[2])>0:
+        if len(l[1])>0:
+            r=mysql.get_teacher(item)
+        else:
+            r=mysql.get_teacher2(item)
+    if len(r)>0:
+        pass
+    else:
+        item['all_link']=l[3]
+        print("add:"+str(item))
+        mysql.insertTeacher(item)
 
 
 

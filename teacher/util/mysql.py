@@ -62,6 +62,11 @@ class Mysql(object):
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
+    def getAllTeacher3(self):
+        sql = "SELECT * from teacher"
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+
     def getAllTeacher2(self):
         sql = "SELECT id,name,institution,school,homepage from teacher"
         self.cursor.execute(sql)
