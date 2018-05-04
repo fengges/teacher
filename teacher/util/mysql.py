@@ -145,7 +145,7 @@ class Mysql(object):
         return self.cursor.fetchall()
 
     def insertTeacher(self, item):
-        sql = "insert into teacher values(NULL,%s,null,null,%s,%s,null,NUll,NUll,null,%s,null)"
+        sql = "insert into teacher values(NULL,%s,null,null,%s,%s,null,NUll,NUll,null,%s)"
         params = (item['name'], item['school'], item['institution'], item['all_link'])
         self.cursor.execute(sql, params)
         self.connect.commit()
