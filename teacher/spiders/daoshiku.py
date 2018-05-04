@@ -3,14 +3,16 @@
 import scrapy
 import re
 import jieba.posseg as pseg
+import pandas as pd
 from teacher.util.xin import *
 from teacher.util.mysql import *
 from teacher.util.shcoolDic import *
+
 class CnkiSpider(scrapy.Spider):
     name = 'daoshiku'
     start_urls = ['http://www.baidu.com']
     xin=Xin()
-
+    teacher={}
     # def parse(self, response):
     #     self.file=open('teacher/data/teacher3.csv','w',encoding='utf8')
     #     self.file.write("学校,学院,姓名,url\n")
@@ -21,16 +23,31 @@ class CnkiSpider(scrapy.Spider):
     #                   'http://cksp.eol.cn/tutor_search.php?page=1&do=b_search&xb=nys']
     #     for url in start_urls:
     #         yield scrapy.Request(url, callback=self.parseLink)
+    @staticmethod
+    def close(spider, reason):
+        file = open('teacher/data/teacher4.csv', 'w', encoding='utf8')
+        file.write("学校,学院,姓名,url\n")
+        for k in spider.teacher:
+            t=spider.teacher[k]
+            file.write(t[0]+','+t[1]+','+t[2]+','+t[3]+'\n')
+        closed = getattr(spider, 'closed', None)
+        if callable(closed):
+            return closed(reason)
     def parse(self, response):
-        self.file=open('teacher/data/teacher3.csv','w',encoding='utf8')
-        self.file.write("学校,学院,姓名,url\n")
+        data=pd.read_csv("teacher/data/teacher3.csv")
+        for a in range(0, data.shape[0]):
+            l= data.iloc[a]._values
+            l[3]="http://cksp.eol.cn/"+l[3]
+            self.teacher[l[3]]=l
+        for url in self.teacher:
+            yield scrapy.Request(url, callback=self.parseInstitution)
+    def parseInstitution(self, response):
+        print(response.url)
+        inst = response.xpath('//table[@class="tab_02"]/tr[2]/td[2]/text()')
+        instName=self.getValue(inst,'')
+        print("机构："+instName)
+        self.teacher[response.url][1]=instName
 
-        start_urls = ['http://cksp.eol.cn/tutor_search.php?page=1&do=b_search&zw=ys',
-                      'http://cksp.eol.cn/tutor_search.php?page=1&do=b_search&type=211',
-                      'http://cksp.eol.cn/tutor_search.php?page=1&do=b_search&type=985',
-                      'http://cksp.eol.cn/tutor_search.php?page=1&do=b_search&xb=nys']
-        for url in start_urls:
-            yield scrapy.Request(url, callback=self.parseLink)
     def parseLink(self, response):
         list=response.xpath('//table[@class="tab_01"]/tr')
         print(response.url)
