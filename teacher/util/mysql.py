@@ -52,6 +52,12 @@ class Mysql(object):
         params=(item['school'],item['adpart'],item['url'])
         self.cursor.execute(sql,params)
         self.connect.commit()
+
+    def insertteacherdata_info(self, item):
+        sql = "INSERT INTO teacherdata_info VALUES (NULL,%s,%s,%s,%s,%s)"
+        params = (item['name'], item['school'], item['instition'],item['url'],item['info'])
+        self.cursor.execute(sql, params)
+        self.connect.commit()
     def getTeacher(self):
         sql = "SELECT * from teacherData2 where search=0 or search>=10 limit 500,100"
         self.cursor.execute(sql)

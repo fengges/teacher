@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/teacher/data/name.txt" charset="GBK" />
     <file url="file://$PROJECT_DIR$/teacher/data/school.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/teacher/data/school2.txt" charset="GBK" />
     <file url="file://$PROJECT_DIR$/teacher/data/url.csv" charset="GBK" />
     <file url="file://$PROJECT_DIR$/teacher/fenlei/fenci.txt" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/teacher/fenlei/stop_words.txt" charset="GBK" />
