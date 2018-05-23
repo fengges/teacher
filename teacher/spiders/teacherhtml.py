@@ -41,20 +41,8 @@ class CnkiSpider(scrapy.Spider):
         t['instition'] = teacher[5]
         t['url'] = teacher[10]
         if response.url.find("http://cksp.eol.cn/tutor_detail.php")<0:
-            try:
-                info = response.body.decode()
-            except Exception as e:
-                print(e)
-                info= response.body.decode('gbk')
-            # print(info)
-            clear = re.compile('<\s*script[^>]*>[^<]*<\s*/\s*script\s*>', re.I)
-            info = clear.sub(" ", info)
-            clear = re.compile('<\s*[^>]*>[^<]*<\s*/\s*style\s*>', re.I)
-            info = clear.sub(" ", info)
-            p = re.compile('<[^>]+>')
-            info=p.sub("",info)
+            info = self.getBody(response)[0].xpath('string(.)').extract()[0]
             info = self.replaceWhite(info)
-
             t['info']=str({'info':info})
         else:
             sex=self.setValue(response.xpath("//table[@class='tab_02']/tr[1]/td[2]/text()"),' ')
@@ -85,8 +73,8 @@ class CnkiSpider(scrapy.Spider):
             item["获得奖项"] = award
             item["著作及论文"] = thesis
             t['info'] = str(item)
-        # print(t)
-        # self.mysql.insertteacherdata_info(t)
+        print(t)
+        self.mysql.insertteacherdata_info(t)
     def getBody(self,response):
         body = response.xpath("//html")
         if len(body)>=2:
