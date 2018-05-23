@@ -95,6 +95,7 @@ for l in list:
 #     file.write(k+'\n')
 # print(fields)
 
+
 for l in list:
     if len(l['fields'])==0:
         continue
