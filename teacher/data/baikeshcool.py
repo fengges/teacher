@@ -1,11 +1,11 @@
 
-import json,re
+import json,re,copy
 f = open("baikeschool2.txt",'r',encoding='utf8')
 dr = re.compile(r'<[^>]+>', re.S)
 line = f.read()
 line= dr.sub('', line)
 school = eval(line)
-
+temp_school=copy.deepcopy(school)
 dic={}
 for t in school:
     s=school[t]
@@ -23,6 +23,32 @@ for t in school:
 temp={}
 for k in dic:
     temp[k]=len(dic[k])
-c1 = sorted(temp.items(), key=lambda x: x[1], reverse=True)
-for c in c1:
-    print(c[0]+":"+str(c[1]))
+column=[]
+for t in temp:
+    if temp[t]>150:
+        column.append(t)
+school=temp_school
+schools={}
+for s in school:
+    schools[s]={}
+    for c in column:
+        if c in school[s]:
+            schools[s][c]=school[s][c]
+            school[s].pop(c)
+        else:
+            schools[s][c] = " "
+    schools[s]['other']=str(school[s])
+f2 = open("baikeschool.csv",'w',encoding='utf8')
+strColumn='school'
+for c in column:
+    strColumn+=','+c
+
+f2.write(strColumn+',other\n')
+for s in schools:
+    if s=="中南林业科技大学":
+        print(s)
+    line=s+''
+    for k in column:
+        line+=','+str(schools[s][k]).replace(',','，')
+    line+=','+schools[s]['other']
+    f2.write(line + '\n')
