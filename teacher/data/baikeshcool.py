@@ -1,6 +1,6 @@
 
 import json,re,copy
-f = open("baikeschool2.txt",'r',encoding='utf8')
+f = open("baikeschool.txt",'r',encoding='utf8')
 dr = re.compile(r'<[^>]+>', re.S)
 line = f.read()
 line= dr.sub('', line)

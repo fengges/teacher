@@ -1,6 +1,6 @@
 
 
-import scrapy,json,time
+import scrapy,json,time,re
 import pandas as pd
 
 class CnkiSpider(scrapy.Spider):
@@ -19,6 +19,7 @@ class CnkiSpider(scrapy.Spider):
             url=self.getUrl(name)
             self.count[name]=0
             yield scrapy.Request(url, lambda arg1=response, arg2=name: self.parseSchool(arg1, arg2))
+
     def getUrl(self,name):
         url='http://baike.baidu.com/api/openapi/BaikeLemmaCardApi?scope=103&format=json&appid=379020&bk_key='+name+'&bk_length=600'
         return url
@@ -40,7 +41,7 @@ class CnkiSpider(scrapy.Spider):
         self.school[name] =self.getDic(t)
     @staticmethod
     def close(spider, reason):
-        file = open('teacher/data/baikeschool2.txt', 'w', encoding='utf8')
+        file = open('teacher/data/baikeschool.txt', 'w', encoding='utf8')
         file.write(str(spider.school))
         closed = getattr(spider, 'closed', None)
         if callable(closed):
