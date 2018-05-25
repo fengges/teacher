@@ -62,6 +62,10 @@ class CnkiSpider(scrapy.Spider):
             item['wapUrl']=t['wapUrl']
         except:
             item['wapUrl'] = ""
+        try:
+            item['image']=t['image']
+        except:
+            item['image'] = ""
 
         if "card" in t and len(t['card'])!=0:
             card=t['card']

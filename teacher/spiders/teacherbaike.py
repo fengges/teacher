@@ -59,7 +59,7 @@ class CnkiSpider(scrapy.Spider):
                     school[s].pop(c)
                 else:
                     schools[s][c] = " "
-            schools[s]['other'] = str(school[s])
+            schools[s]['other'] = school[s]
         self.school=schools
         self.column=column
 
@@ -89,31 +89,32 @@ class CnkiSpider(scrapy.Spider):
                     name='教师'
                     dic[name] = []
                 dic[name].append(temp.replace(',','，'))
-        self.school[school]['teacher']=str(dic)
+        self.school[school]['teacher']=dic
 
 
     @staticmethod
     def close(spider, reason):
         schools=spider.school
         column=spider.column
-        f2 = open("teacher/data/baikeschool2.csv", 'w', encoding='utf8')
-        strColumn = 'school'
-        for c in column:
-            strColumn += ',' + c
-
-        f2.write(strColumn + ',other,teacher\n')
-        for s in schools:
-            if s == "中南林业科技大学":
-                print(s)
-            line = s + ''
-            for k in column:
-                line += ',' + str(schools[s][k]).replace(',', '-|-')
-            line += ',' + schools[s]['other'].replace(',', '-|-')
-            if 'teacher' in schools[s]:
-                line += ',' + schools[s]['teacher'].replace(',', '-|-')
-            else:
-                line += ', '
-            f2.write(line + '\n')
+        f2 = open("teacher/data/baikeschool2.txt", 'w', encoding='utf8')
+        f2.write(str(schools))
+        # strColumn = 'school'
+        # for c in column:
+        #     strColumn += ',' + c
+        #
+        # f2.write(strColumn + ',other,teacher\n')
+        # for s in schools:
+        #     if s == "中南林业科技大学":
+        #         print(s)
+        #     line = s + ''
+        #     for k in column:
+        #         line += ',' + str(schools[s][k]).replace(',', '-|-')
+        #     line += ',' + schools[s]['other'].replace(',', '-|-')
+        #     if 'teacher' in schools[s]:
+        #         line += ',' + schools[s]['teacher'].replace(',', '-|-')
+        #     else:
+        #         line += ', '
+        #     f2.write(line + '\n')
         closed = getattr(spider, 'closed', None)
         if callable(closed):
             return closed(reason)
