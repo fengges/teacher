@@ -47,9 +47,10 @@ class CnkiSpider(scrapy.Spider):
             temp[k] = len(dic[k])
         column = []
         for t in temp:
-            if temp[t] > 150:
+            if temp[t] > 190:
                 column.append(t)
         school = temp_school
+        column = ['wapUrl','abstract', 'image', '英文名', '创办时间', '属性', '校训', '学校地址', '国家重点学科', '硕士点', '博士点']
         schools = {}
         for s in school:
             schools[s] = {}
@@ -95,7 +96,7 @@ class CnkiSpider(scrapy.Spider):
     @staticmethod
     def close(spider, reason):
         schools=spider.school
-        column=spider.column
+
         f2 = open("teacher/data/baikeschool2.txt", 'w', encoding='utf8')
         f2.write(str(schools))
         # strColumn = 'school'

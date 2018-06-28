@@ -8,7 +8,11 @@ class Mysql(object):
     isZhu=True
     def __init__(self):
         if self.isZhu:
-            ip = socket.gethostbyname(socket.gethostname())[0:-2]+'.1'
+            ipStr=socket.gethostbyname(socket.gethostname())
+            if ipStr[-2]==".":
+                ip = ipStr[0:ipStr.rfind('.')]+'.1'
+            else:
+                ip=ipStr
         else:
             ip="localhost"
         self.connect=pymysql.Connect(
@@ -24,7 +28,29 @@ class Mysql(object):
 
     # cursor=''
     # school操作
-
+    def insertItem(self, item):
+        # insert into student_info(stuName,stuAge) values('liutao',13)
+        table = item["table"] + "("
+        temp = ",".join(["%s" for i in item["params"]])
+        column = " values(" + temp + ")"
+        paramList = []
+        columnList = []
+        for k in item["params"]:
+            columnList.append(k)
+            paramList.append(item["params"][k])
+        params = tuple(paramList)
+        sql = "insert into " + table + ",".join(columnList) + ")" + column
+        self.exe_sql(sql, params)
+    def getSchoolByName(self,name):
+        sql = "SELECT * FROM school_info where name like %s"
+        params = ("%"+name+"%",)
+        self.cursor.execute(sql, params)
+        return self.cursor.fetchall()
+    def updateByName(self,name,item):
+        sql = "update  school_info set title=%s,star=%s,scope=%s where name like %s"
+        params = (item["title"],item["star"],item["scope"],"%"+name+"%")
+        self.cursor.execute(sql, params)
+        self.connect.commit()
     #获取
     def getSchool(self,search):
         sql = "SELECT  * from school  WHERE search=%s order by url"
@@ -147,8 +173,11 @@ class Mysql(object):
         self.cursor.executemany("insert into paper_dot values(NUll,%s,%s,%s,1)",item)
         self.connect.commit()
 
-    def exe_sql(self,sql):
-        self.cursor.execute(sql)
+    def exe_sql(self,sql,params=None):
+        if params is None:
+            self.cursor.execute(sql)
+        else :
+            self.cursor.execute(sql, params)
         self.connect.commit()
 
     def get_sql(self,sql):
