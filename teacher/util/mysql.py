@@ -7,20 +7,14 @@ class Mysql(object):
     cursor = ''
     isZhu=True
     def __init__(self):
-        if self.isZhu:
-            ipStr=socket.gethostbyname(socket.gethostname())
-            if ipStr[-2]==".":
-                ip = ipStr[0:ipStr.rfind('.')]+'.1'
-            else:
-                ip=ipStr
-        else:
-            ip="localhost"
+
+        ip="47.104.236.183"
         self.connect=pymysql.Connect(
         host=ip,
         port=3306,
         user='root',
-        passwd='123456',
-        db='schoollink',
+        passwd='SLX..eds123',
+        db='eds',
         charset='utf8'
 )
         self.cursor=self.connect.cursor()
@@ -53,13 +47,17 @@ class Mysql(object):
         self.connect.commit()
     #获取
     def getSchool(self,search):
-        sql = "SELECT  * from school  WHERE search=%s order by url"
+        sql = "SELECT * FROM `eds_985institution_teacherlist` where flag=%s"
         self.cursor.execute(sql,(search))
         return self.cursor.fetchall()
-
+    def updateSchoolbyUrl(self,url,search):
+        sql="update `eds_985institution_teacherlist` set flag=%s where institution_url=%s"
+        params=(search,url)
+        self.cursor.execute(sql, params)
+        self.connect.commit()
     #更新
     def updateSchool(self,id,search):
-        sql="update school set search=%s where id=%s"
+        sql="update `eds_985institution_teacherlist` set flag=%s where id=%s"
         params=(search,id)
         self.cursor.execute(sql, params)
         self.connect.commit()
@@ -100,12 +98,12 @@ class Mysql(object):
         return self.cursor.fetchall()
 
     def getAllTeacher2(self):
-        sql = "SELECT id,name,institution,school,homepage from teacher"
+        sql = "SELECT * from teacher2"
         self.cursor.execute(sql)
 
         return self.cursor.fetchall()
     def deleteTeacher(self,id):
-        sql = "delete from teacherData2 where id=%s"
+        sql = "delete from teacher2 where id=%s"
         self.cursor.execute(sql,(id))
         self.connect.commit()
 
@@ -132,9 +130,10 @@ class Mysql(object):
         sql='SELECT count(*) as sum, id_paper_left,id_paper_right  FROM `paper_dot` GROUP BY id_paper_left,id_paper_right HAVING sum>1'
         self.cursor.execute(sql)
         return self.cursor.fetchall()
-    def updateT(self,id,name,url):
-        sql = "update teacherData2 set name='"+name+"' ,link='"+url +"' where id="+str(id)
-        self.cursor.execute(sql)
+    def updateT(self,item):
+        sql = "update teacher2 set institution_url=%s , all_link=%s , school=%s ,issplit=1 where id=%s"
+        params = (item['institution_url'], item['all_link'],item['school'],item['id'])
+        self.cursor.execute(sql,params)
         self.connect.commit()
     def selectall(self):
         sql="SELECT * FROM `teacherdata2`"
@@ -189,14 +188,19 @@ class Mysql(object):
         params = (item['name'], item['school'], item['institution'], item['all_link'])
         self.cursor.execute(sql, params)
         self.connect.commit()
+    def get_url_num(self,item):
+        sql='select count(*) as num from teacher2 where all_link=%s'
+        params = (item)
+        self.cursor.execute(sql, params)
+        return self.cursor.fetchall()
     def get_teacher(self,item):
-        sql='select * from teacher where institution=%s and school=%s and name=%s'
-        params = (item['institution'], item['school'], item['name'])
+        sql='select * from teacher2 where institution=%s and school=%s and name=%s and all_link=%s'
+        params = (item['institution'], item['school'], item['name'],item['all_link'])
         self.cursor.execute(sql, params)
         return self.cursor.fetchall()
     def get_teacher2(self,item):
-        sql='select * from teacher where school=%s and name=%s'
-        params = (item['school'], item['name'])
+        sql='select * from teacher2 where school=%s and name=%s and institution=%s'
+        params = (item['school'], item['name'],item['institution'])
         self.cursor.execute(sql, params)
         return self.cursor.fetchall()
 

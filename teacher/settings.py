@@ -14,6 +14,7 @@ BOT_NAME = 'teacher'
 SPIDER_MODULES = ['teacher.spiders']
 NEWSPIDER_MODULE = 'teacher.spiders'
 
+RETRY_ENABLED = False
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'teacher (+http://www.yourdomain.com)'
@@ -49,7 +50,10 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #SPIDER_MIDDLEWARES = {
 #    'teacher.middlewares.TeacherSpiderMiddleware': 543,
 #}
-
+DOWNLOADER_MIDDLEWARES = {
+   # 'teacher.middlewares.BaiduxueshuSpiderMiddleware': 543,
+   # 'teacher.middlewares.IPPOOLS': 125,
+}
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {

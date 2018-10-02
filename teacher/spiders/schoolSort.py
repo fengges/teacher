@@ -8,7 +8,7 @@ from teacher.util.mysql import *
 from teacher.util.shcoolDic import *
 class CnkiSpider(scrapy.Spider):
     name = 'schoolSort'
-    start_urls = ['https://www.phb123.com/jiaoyu/gx/23961.html','http://www.cdgdc.edu.cn/webrms/pages/Ranking/xkpmGXZJ2016.jsp?xkdm=01,02,03,04,05,06']
+    start_urls = ['https://www.phb123.com/jiaoyu/gx/23961.html','http://www.cdgdc.edu.cn/webrms/pages/Ranking/xkpmGXZJ2016.jsp']
     school=[]
 
 
@@ -63,25 +63,21 @@ class CnkiSpider(scrapy.Spider):
             xueke1=spider.getXueke(l)
             school=level[l]
             for s in school:
-                name=s["school"].split(" ")[7]
-                t=mysql.getSchoolByName(name)
+                name=s["school"].split(" ")[1]+','+s["school"].split(" ")[7]
+
                 temp={}
                 temp["xueke1"]=xueke1
                 temp["xueke2"] = xueke2
                 temp["level"] = s["level"]
-                if len(t)==0:
-                    temp["school"] = name
-                    item = {}
-                    item["table"] = "discipline"
-                    item["params"] = temp
+                temp["school"] = name
+                item = {}
+                item["table"] = "discipline"
+                item["params"] = temp
+                try:
                     mysql.insertItem(item)
-                else:
-                    for i in t:
-                        temp["school"] = i[0]
-                        item={}
-                        item["table"]="discipline"
-                        item["params"] = temp
-                        mysql.insertItem(item)
+                except:
+                    print(item)
+
         # school=spider.school
 
         # for s in school:

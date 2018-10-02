@@ -14,24 +14,32 @@ import jieba.posseg as pseg
 class CnkiListSpider(scrapy.Spider):
     name = 'teacherName'
     xin=Xin()
-    start_urls = ['http://epe.xjtu.edu.cn']
-    # mysql=Mysql()
+    start_urls = ['http://www.baidu.com']
+    mysql=Mysql()
+    handle_httpstatus_list = [404,500,502,503]
     school={}
     len=4
 
     def parse(self, response):
-        school=self.mysql.getSchool(100)
+        school=self.mysql.getSchool(0)
         for s in school:
             self.school[str(s[0])]=s
         for k in self.school:
         #     yield scrapy.Request(k,dont_filter=True, callback=self.parseLink)
-
+            if len(self.school[k][3])==0:
+                self.mysql.updateSchool(self.school[k][0], 10)
+                continue
             yield scrapy.Request(self.school[k][3], lambda arg1=response, arg2=k: self.parseLink(arg1, arg2))
         # url="http://www.tju.edu.cn/seie/szdw/qrjh/"
         # yield scrapy.Request(url, dont_filter=True, callback=self.parseLink)
 
     def parseLink(self, response,k):
-        print(response.url)
+
+        if response.status == 500 or response.status == 404 or response.status == 502 or response.status == 503:
+            url = response.url
+            self.mysql.updateSchool(self.school[k][0], 10)
+            print("error:" + url)
+            return
         nameList=[]
         nodePath=[]
         body=self.getBody(response)
@@ -93,7 +101,6 @@ class CnkiListSpider(scrapy.Spider):
 
     def printAndInsertTeacher(self,teacherList,id):
         school=self.school[id]
-
         if school is None:
             raise 0
         for key in teacherList:
@@ -104,8 +111,8 @@ class CnkiListSpider(scrapy.Spider):
             item['name'] = self.getXin(teacherList[key])
             item['link']=key
             item['all_link'] =self.getTeacherUrl(key,school[3])
-
-            self.mysql.insertTeacherLink(item)
+            temp={"table":"eds_985teacher","params":item}
+            self.mysql.insertItem(temp)
 
     def deleteAndGetMax(self,maxPath,p):
         p[maxPath] = -1

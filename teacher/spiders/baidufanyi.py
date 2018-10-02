@@ -18,21 +18,26 @@ class CnkiSpider(scrapy.Spider):
         self.num = 0
         i = 0
         dic=copy.deepcopy(self.dic)
-        for t in dic:
-            if dic[t] != 1:
-                continue
-            url = self.getUrl(t)
+        print("all"+str(len(dic)))
+        list=[t for t in self.dic if self.dic[t]==1]
+        print("trant:" + str(len(list)))
+        for  l in list:
+            url = self.getUrl(l)
             i += 1
-            if i % 5000 == 0:
-
-                print("sleep:" + str(i))
-
+            if i % 250000 == 0:
+                # ti=random.randint(10,15)
+                # print("num:"+str(i)+" and sleep:" + str(ti))
+                # time.sleep(ti)
+                return
             yield scrapy.Request(url, callback=self.parseLink)
 
     def parseLink(self, response):
         self.num += 1
         if self.num % 5000 == 0:
+            list = [t for t in self.dic if self.dic[t] != 1]
             print('save:' + str(self.num))
+            print("trant:" + str(len(list)))
+
             f = open('teacher/data/dic.txt', 'wb')
             pickle.dump(self.dic, f)
             f.close()
